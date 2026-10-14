@@ -669,7 +669,7 @@ public class DiameterLinkImpl implements DiameterLink, AssociationListener
 			message = null;
 			try
 			{
-				message = parser.decode(buffer, rejectUnmandatoryAvps, rejectMandatoryAvps);			
+				message = parser.decode(buffer, rejectUnmandatoryAvps, rejectMandatoryAvps);
 				if (message != null)
 				{
 					hadMessage = true;
@@ -681,6 +681,12 @@ public class DiameterLinkImpl implements DiameterLink, AssociationListener
 					catch(DiameterException ex)
 					{
 						// sessionless messages are for the link itself
+						sessionID = linkId;
+					}
+					if (sessionID == null || sessionID.isEmpty())
+					{
+						// DIGICOM-ET DRA fix: answers without Session-Id must not
+						// NPE WorkerPool.addTaskLast(null) — key by link instead.
 						sessionID = linkId;
 					}
 					
